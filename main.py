@@ -42,7 +42,10 @@ def main():
               f'Number of items in: {len(data)}\n'
               f'HUF is {sum_of_costs}')
 
-    # TODO rohodovanie o tom, ktorý zoberie a ktorý nie ! naspať do poradia! a určiť x
+    # TODO: rohodovanie o tom, ktorý zoberie a ktorý nie
+    # TODO: naspať do poradia!
+    # TODO: určiť x
+    # TODO: ypísať do súboru!
     print(f'SOLUTION:\n'
           f'Sum_of_weights is {sum_of_weights}\n'
           f'Sum_of_costs is {sum_of_costs}')
