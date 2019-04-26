@@ -1,38 +1,53 @@
-with open("./data/H3_a.txt") as weights_file:
-    weights = [int(x) for x in weights_file.read().splitlines()]
-with open("./data/H3_c.txt") as costs_file:
-    costs = [int(x) for x in costs_file.read().splitlines()]
-
-data = list(zip(weights, costs))
-data.sort(key=lambda tup: tup[0])
-
-n = 500
 r = 300
 K = 15000
 
-sum_of_weights = sum(i for i, _ in data)
-sum_of_costs = sum(j for _, j in data)
+files = ["H3_a.txt", "H3_c.txt"]
 
 
-def find_min_weight_index(start_value):
-    temp_min = min(data[start_value:], key=lambda t: t[0])
-    if sum_of_weights - temp_min[0] < K:
-        find_min_weight_index(min_weight_index)
-    return data.index(temp_min)
+def get_data_from_file(filename):
+    with open("./data/" + filename) as file:
+        return [int(x) for x in file.read().splitlines()]
 
 
-while sum_of_weights > K and len(data) > r:
-    min_weight_index = find_min_weight_index(None)
-    print(f'Removing element with minimum weight {data[min_weight_index]} on index {min_weight_index}')
-    data.pop(min_weight_index)
+def load_data():
+    weights = get_data_from_file(files[0])
+    costs = get_data_from_file(files[1])
+    data = list(zip(weights, costs))
+    data.sort(key=lambda t: t[0])
+    return data
+
+
+def main():
+    data = load_data()
+
+    # test = [sum(x) for x in zip(*data)]
     sum_of_weights = sum(i for i, _ in data)
     sum_of_costs = sum(j for _, j in data)
-    print(f'Sum_of_weights is {sum_of_weights} and Sum_of_costs is {sum_of_costs}')
-    print(f'Number of items in: {len(data)}')
-    print(f'HUF is {sum_of_costs}')
 
-print(len(data))
-# print(data)
+    while sum_of_weights > K and len(data) > r:
+        min_weight = min(data, key=lambda t: t[0])
+        min_weight_index = data.index(min_weight)
 
-print(sum_of_weights)
-print(sum_of_costs)
+        if sum_of_weights - min_weight[0] < K:
+            # i have sorted data, that mean, i cant find nothing lower than this values
+            break
+
+        print(f'Removing element {min_weight} with minimum weight {min_weight[0]} on index {min_weight_index}')
+        # TODO: tu nebude remove, ale označím si to ako predmet odstranený z batohu
+        data.pop(min_weight_index)
+        sum_of_weights = sum(i for i, _ in data)
+        sum_of_costs = sum(j for _, j in data)
+        print(f'Sum of weights is: {sum_of_weights}\n'
+              f'Sum_of_costs is: {sum_of_costs}\n'
+              f'Number of items in: {len(data)}\n'
+              f'HUF is {sum_of_costs}')
+
+    # TODO rohodovanie o tom, ktorý zoberie a ktorý nie ! naspať do poradia! a určiť x
+    print(f'SOLUTION:\n'
+          f'Sum_of_weights is {sum_of_weights}\n'
+          f'Sum_of_costs is {sum_of_costs}')
+
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()
