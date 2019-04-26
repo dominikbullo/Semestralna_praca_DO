@@ -46,6 +46,7 @@ def main():
     # TODO: naspať do poradia!
     # TODO: určiť x
     # TODO: ypísať do súboru!
+    
     print(f'SOLUTION:\n'
           f'Sum_of_weights is {sum_of_weights}\n'
           f'Sum_of_costs is {sum_of_costs}')
