@@ -10,17 +10,16 @@ def get_data_from_file(filename):
 
 
 def load_data():
-    weights = get_data_from_file(files[0])
-    costs = get_data_from_file(files[1])
-    data = list(map(list, zip(weights, costs)))
+    data = list(map(list, zip(get_data_from_file(files[0]), get_data_from_file(files[1]))))
+    print(f'Data load successfully')
 
     # All data have parameters, if i should use them, or not, and first index
+    print(f'Východiskové riešenie --> batoh so všetkými predmetmi.')
     for index, x in enumerate(data):
         data[index] += (True, index + 1)
 
     # sort for better search
     data.sort(key=lambda t: t[0])
-
     return data
 
 
@@ -30,7 +29,10 @@ def main():
     sum_of_weights = sum(i for i, _, k, _ in data if k)
     sum_of_costs = sum(j for _, j, k, _ in data if k)
     number_of_items = len([k for _, _, k, _ in data if k])
-    print(f"UHF on start is: {sum_of_costs}")
+
+    print(f"HUF on start is: {sum_of_costs}\n"
+          f"Number of items in knapsack is: {number_of_items}\n"
+          f"Sum_of_weights in knapsack is: {sum_of_weights}")
 
     while sum_of_weights > K and number_of_items > r:
         min_weight = min((x for x in data if x[2]), key=lambda x: x[0])
@@ -44,23 +46,30 @@ def main():
         sum_of_weights -= data[min_weight_index][0]
         sum_of_costs -= data[min_weight_index][1]
         number_of_items -= 1
-        print(f'HUF is {sum_of_costs}, removed: {min_weight[0]}/{min_weight[1]}')
+        # print(f'HUF is {sum_of_costs}, removed: {min_weight[0]}/{min_weight[1]}')
 
     data.sort(key=lambda t: t[3])
 
-    # TODO checks
-    print(f'SOLUTION:\n'
-          f'HUF is {sum_of_costs}\n'
-          f'Check HUF is {sum(j for _, j, k, _ in data if k)}\n'
-          f'Number_of_items is {number_of_items}\n'
-          f'Check Number_of_items is {len([k for _, _, k, _ in data if k])}\n'
-          f'Sum_of_weights is {sum_of_weights}\n'
-          f'Check Sum_of_weights is {sum(i for i, _, k, _ in data if k)}\n'
-          f'Sum_of_costs is {sum_of_costs}\n'
-          f'Check Sum_of_costs is {sum(j for _, j, k, _ in data if k)}\n')
+    check_solution(data, sum_of_weights, sum_of_costs, number_of_items)
+
+    print(f'\nSOLUTION:\n'
+          f'HUF is: {sum_of_costs}\n'
+          f'Number of items in knapsack is: {number_of_items}\n'
+          f'Sum of_weights in knapsack is: {sum_of_weights}\n'
+          f'Sum of costs in knapsack is: {sum_of_costs}\n')
 
     # TODO write into file
-    print(data)
+    with open("solution.txt", "w") as outfile:
+        outfile.writelines(list("%s\n" % item for item in data))
+
+
+def check_solution(data, sum_of_weights, sum_of_costs, number_of_items):
+    if sum(i for i, _, k, _ in data if k) != sum_of_weights:
+        raise Exception("Check values for sum of weights in knapsack do not match!")
+    if sum(j for _, j, k, _ in data if k) != sum_of_costs:
+        raise Exception("Check values for sum of costs in knapsack do not match!")
+    if len([k for _, _, k, _ in data if k]) != number_of_items:
+        raise Exception("Check values for number of items in knapsack do not match!")
 
 
 if __name__ == "__main__":
